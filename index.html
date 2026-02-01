@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sesiones Cloud Pro - Frank Tovar</title>
+    <title>Sesiones Cloud Pro - Control Compartido</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -15,14 +15,37 @@
             --warning: #f59e0b; --danger: #dc2626; --dark: #1e293b; --bg: #f1f5f9;
         }
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
-        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; background: white; }
-        .btn-google { background: white; color: #444; padding: 12px 24px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
         
+        /* Pantalla de Login */
+        #login-screen { 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; height: 100vh; text-align: center; background: white;
+        }
+        .btn-google { 
+            background: white; color: #444; padding: 12px 24px; 
+            border-radius: 8px; border: 1px solid #ddd; font-weight: bold; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Contenedor Principal (Oculto hasta Login) */
         .container { max-width: 1200px; margin: auto; display: none; }
-        header { background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+
+        header { 
+            background: white; padding: 15px; border-radius: 12px; 
+            margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+        }
+
+        h1 { font-size: 1.2rem; margin: 0; color: var(--primary); }
+
+        .form-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 12px; background: white; padding: 20px; border-radius: 12px; 
+            margin-bottom: 20px; border: 1px solid #e2e8f0;
+        }
+
         .field-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-weight: 600; font-size: 0.8rem; color: var(--secondary); }
         input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; }
@@ -38,11 +61,11 @@
         .card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
         
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: var(--secondary); text-transform: uppercase; font-size: 0.7rem; }
+        th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: var(--secondary); text-transform: uppercase; font-size: 0.65rem; }
         td { padding: 10px 8px; border-bottom: 1px solid #f8fafc; }
 
         .money-blur { filter: blur(8px); opacity: 0.4; user-select: none; }
-        .badge { background: #e2e8f0; padding: 2px 6px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; }
+        .badge { background: #e2e8f0; padding: 2px 6px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         
         .actions { display: flex; gap: 5px; }
         .btn-act { border: none; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
@@ -60,7 +83,7 @@
 
 <div id="login-screen">
     <h1 style="color: var(--primary)">Control de Sesiones Pro</h1>
-    <p>Acceso Privado - Frank Tovar</p>
+    <p style="color: var(--secondary)">Sistema Privado Frank & Giuliana</p>
     <button class="btn-google" onclick="login()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
         Ingresar con Google
@@ -70,23 +93,23 @@
 <div class="container" id="app-container">
     <header>
         <div>
-            <h1>Sesiones Cloud V2</h1>
-            <button onclick="togglePrivacidad()" id="btnLock" style="background:none; border:1px solid #ddd; padding:5px 10px; border-radius:8px; cursor:pointer; margin-top:5px;">🔒 Ver Montos</button>
+            <h1>Mis Sesiones Cloud</h1>
+            <button onclick="togglePrivacidad()" id="btnLock" style="background:none; border:1px solid #ddd; padding:5px 8px; border-radius:8px; cursor:pointer; font-size: 0.7rem; margin-top:5px;">🔒 Ver Montos</button>
         </div>
         <div style="text-align: right;">
             <div id="user-display" style="font-size: 0.7rem; font-weight: bold; color: var(--success);"></div>
-            <button onclick="logout()" style="border:none; background:none; color:var(--danger); font-size:0.7rem; cursor:pointer;">Cerrar Sesión</button>
+            <button onclick="logout()" style="border:none; background:none; color:var(--danger); font-size:0.7rem; cursor:pointer; font-weight: bold;">Cerrar Sesión</button>
         </div>
     </header>
 
     <div class="stats">
         <div class="stat-card"><small>SESIONES</small><span id="totalSesiones">0</span></div>
-        <div class="stat-card"><small>INGRESOS</small><span id="totalIngresos" class="money-blur">S/ ****</span></div>
+        <div class="stat-card"><small>TOTAL</small><span id="totalIngresos" class="money-blur">S/ ****</span></div>
     </div>
 
     <div class="form-grid">
         <input type="hidden" id="editId">
-        <div class="field-group"><label>Curso</label><input list="cursos-list" id="curso"><datalist id="cursos-list"></datalist></div>
+        <div class="field-group"><label>Curso</label><input list="cursos-list" id="curso" placeholder="Selecciona..."><datalist id="cursos-list"></datalist></div>
         <div class="field-group"><label>Fecha</label><input type="date" id="fecha"></div>
         <div class="field-group"><label>Horario</label>
             <select id="horario">
@@ -98,7 +121,7 @@
             </select>
         </div>
         <div class="field-group"><label>Rol</label><select id="rol"><option value="40">Titular</option><option value="30">Auxiliar</option></select></div>
-        <div style="display: flex; gap: 8px;">
+        <div style="display: flex; gap: 8px; align-items: flex-end;">
             <button class="btn-save" onclick="guardarSesion()" id="btnPrincipal" style="flex:2">Registrar</button>
             <button class="btn-cancel" onclick="resetForm()" id="btnCancel" style="flex:1">X</button>
         </div>
@@ -108,24 +131,25 @@
         <div class="card">
             <h3>Historial de Clases</h3>
             <table>
-                <thead><tr><th>Fecha</th><th>Curso</th><th class="hide-mobile">Monto</th><th>Acciones</th></tr></thead>
+                <thead><tr><th>Fecha</th><th>Curso</th><th class="hide-mobile">Pago</th><th>Acciones</th></tr></thead>
                 <tbody id="tablaBody"></tbody>
             </table>
         </div>
         <div class="sidebar">
             <div class="card">
                 <h3>Resumen Mensual</h3>
-                <table id="tablaMeses"><thead><tr><th>Mes</th><th>Ses.</th><th>Total</th></tr></thead><tbody></tbody></table>
+                <table id="tablaMeses"><thead><tr><th>Mes</th><th>Ses.</th><th>Subtotal</th></tr></thead><tbody></tbody></table>
             </div>
             <div class="card">
                 <h3>Resumen Semanal</h3>
-                <table id="tablaSemanas"><thead><tr><th>Rango</th><th>Ses.</th><th>Total</th></tr></thead><tbody></tbody></table>
+                <table id="tablaSemanas"><thead><tr><th>Rango</th><th>Ses.</th><th>Subtotal</th></tr></thead><tbody></tbody></table>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+    // CONFIGURACIÓN FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyAirJkl3GuwTRKhpOHHTMDSrQMErtVYTQA",
       authDomain: "control-de-sesiones-276d7.firebaseapp.com",
@@ -142,25 +166,33 @@
     const auth = firebase.auth();
     const provider = new firebase.auth.GoogleAuthProvider();
 
-    const EMAIL_AUTORIZADO = "frank.tovar@comsatelglobal.com";
+    // SEGURIDAD: LISTA BLANCA
+    const CORREOS_PERMITIDOS = [
+        "frank.tovar@comsatelglobal.com",
+        "giulianabf15@gmail.com"
+    ];
+
     let sesiones = [];
     let mostrarMontos = false;
 
     auth.onAuthStateChanged(user => {
-        if (user && user.email === EMAIL_AUTORIZADO) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            document.getElementById('user-display').innerText = user.displayName;
-            iniciarApp();
-        } else if (user) {
-            alert("Acceso denegado."); auth.signOut();
+        if (user) {
+            if (CORREOS_PERMITIDOS.includes(user.email)) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+                document.getElementById('user-display').innerText = user.displayName;
+                iniciarApp();
+            } else {
+                alert("Acceso No Autorizado.");
+                auth.signOut();
+            }
         } else {
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('app-container').style.display = 'none';
         }
     });
 
-    function login() { auth.signInWithPopup(provider); }
+    function login() { auth.signInWithPopup(provider).catch(e => alert("Error al ingresar: " + e.message)); }
     function logout() { auth.signOut(); }
 
     function iniciarApp() {
@@ -200,7 +232,7 @@
         document.getElementById('rol').value = s.tarifa;
         document.getElementById('btnPrincipal').innerText = "Actualizar";
         document.getElementById('btnCancel').style.display = "block";
-        window.scrollTo(0,0);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function clonarSesion(id) {
@@ -211,7 +243,7 @@
         document.getElementById('fecha').value = "";
         document.getElementById('btnPrincipal').innerText = "Clonar Clase";
         document.getElementById('btnCancel').style.display = "block";
-        window.scrollTo(0,0);
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     function resetForm() {
@@ -231,7 +263,7 @@
         let d = new Date(f + 'T12:00:00');
         let l = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)));
         let dom = new Date(l); dom.setDate(l.getDate() + 6);
-        return `${l.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'})} al ${dom.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'})}`;
+        return `${l.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'})}-${dom.toLocaleDateString('es-PE',{day:'2-digit',month:'2-digit'})}`;
     }
 
     function renderizar() {
@@ -257,15 +289,22 @@
                 <td><strong>${s.curso}</strong></td>
                 <td class="hide-mobile ${mostrarMontos?'':'money-blur'}">${pTxt}</td>
                 <td class="actions">
-                    <button class="btn-act btn-copy" onclick="clonarSesion('${s.fbKey}')">📋</button>
-                    <button class="btn-act btn-edit" onclick="prepararEdicion('${s.fbKey}')">✏️</button>
-                    <button class="btn-act btn-del" onclick="if(confirm('¿Eliminar?')) db.ref('sesiones/'+'${s.fbKey}').remove()">🗑️</button>
+                    <button class="btn-act btn-copy" onclick="clonarSesion('${s.fbKey}')" title="Clonar">📋</button>
+                    <button class="btn-act btn-edit" onclick="prepararEdicion('${s.fbKey}')" title="Editar">✏️</button>
+                    <button class="btn-act btn-del" onclick="if(confirm('¿Eliminar?')) db.ref('sesiones/'+'${s.fbKey}').remove()" title="Borrar">🗑️</button>
                 </td>
             </tr>`;
         });
 
-        Object.keys(mesD).forEach(k => tM.innerHTML += `<tr><td>${k}</td><td><span class="badge">${mesD[k].c}</span></td><td class="${mostrarMontos?'':'money-blur'}">S/ ${mesD[k].m}</td></tr>`);
-        Object.keys(semD).forEach(k => tS.innerHTML += `<tr><td>${k}</td><td><span class="badge">${semD[k].c}</span></td><td class="${mostrarMontos?'':'money-blur'}">S/ ${semD[k].m}</td></tr>`);
+        Object.keys(mesD).forEach(k => {
+            const mVal = mostrarMontos ? `S/ ${mesD[k].m}` : `S/ **`;
+            tM.innerHTML += `<tr><td>${k}</td><td><span class="badge">${mesD[k].c}</span></td><td class="${mostrarMontos?'':'money-blur'}">${mVal}</td></tr>`;
+        });
+
+        Object.keys(semD).forEach(k => {
+            const sVal = mostrarMontos ? `S/ ${semD[k].m}` : `S/ **`;
+            tS.innerHTML += `<tr><td>${k}</td><td><span class="badge">${semD[k].c}</span></td><td class="${mostrarMontos?'':'money-blur'}">${sVal}</td></tr>`;
+        });
 
         document.getElementById('totalSesiones').innerText = sesiones.length;
         document.getElementById('totalIngresos').innerText = mostrarMontos ? `S/ ${total.toFixed(2)}` : `S/ ****`;
