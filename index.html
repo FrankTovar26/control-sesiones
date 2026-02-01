@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sesiones Cloud Pro - Frank Tovar</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb; --secondary: #64748b; --success: #16a34a;
+            --warning: #f59e0b; --danger: #dc2626; --dark: #1e293b; --bg: #f1f5f9;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
+        
+        /* Pantalla de Login */
+        #login-screen { 
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; height: 100vh; text-align: center; background: white;
+        }
+        .btn-google { 
+            background: white; color: #444; padding: 12px 24px; 
+            border-radius: 8px; border: 1px solid #ddd; font-weight: bold; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Contenedor Principal (Oculto por defecto) */
+        .container { max-width: 1200px; margin: auto; display: none; }
+
+        header { 
+            background: white; padding: 15px; border-radius: 12px; 
+            margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .form-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 12px; background: white; padding: 20px; border-radius: 12px; 
+            margin-bottom: 20px; border: 1px solid #e2e8f0;
+        }
+
+        .field-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-weight: 600; font-size: 0.8rem; color: var(--secondary); }
+        input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; }
+
+        .btn-save { background: var(--primary); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-card { background: white; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; }
+        .stat-card span { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        .card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 8px; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 10px 8px; border-bottom: 1px solid #f8fafc; }
+
+        .actions { display: flex; gap: 5px; }
+        .btn-edit { background: #dcfce7; color: var(--success); border:none; padding:5px; border-radius:4px; cursor:pointer;}
+        .btn-del { background: #fee2e2; color: var(--danger); border:none; padding:5px; border-radius:4px; cursor:pointer;}
+    </style>
+</head>
+<body>
+
+<div id="login-screen">
+    <h1 style="color: var(--primary)">Control de Sesiones Pro</h1>
+    <p style="color: var(--secondary)">Sistema Privado de Frank Tovar</p>
+    <button class="btn-google" onclick="login()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
+        Ingresar con Google
+    </button>
+</div>
+
+<div class="container" id="app-container">
+    <header>
+        <div>
+            <h1 style="font-size: 1.2rem;">Mis Sesiones Cloud</h1>
+            <span id="user-display" style="font-size: 0.7rem; font-weight: bold; color: var(--success);"></span>
+        </div>
+        <button onclick="logout()" style="border: none; background: none; color: var(--danger); font-weight: bold; cursor: pointer;">Salir</button>
+    </header>
+
+    <div class="stats">
+        <div class="stat-card"><small>SESIONES</small><span id="totalSesiones">0</span></div>
+        <div class="stat-card"><small>INGRESOS</small><span id="totalIngresos">S/ 0.00</span></div>
+    </div>
+
+    <div class="form-grid">
+        <input type="hidden" id="editId">
+        <div class="field-group"><label>Curso</label><input list="cursos-list" id="curso" placeholder="Ej: SocialMente"><datalist id="cursos-list"></datalist></div>
+        <div class="field-group"><label>Fecha</label><input type="date" id="fecha"></div>
+        <div class="field-group"><label>Horario</label>
+            <select id="horario">
+                <option value="09:00 - 10:40">09:00 - 10:40</option>
+                <option value="11:00 - 12:40">11:00 - 12:40</option>
+                <option value="14:40 - 16:40">14:40 - 16:40</option>
+                <option value="16:40 - 19:00">16:40 - 19:00</option>
+                <option value="19:00 - 21:00">19:00 - 21:00</option>
+            </select>
+        </div>
+        <div class="field-group"><label>Rol</label><select id="rol"><option value="40">Titular</option><option value="30">Auxiliar</option></select></div>
+        <button class="btn-save" onclick="guardarSesion()" id="btnPrincipal">Registrar</button>
+    </div>
+
+    <div class="card">
+        <h3>Historial Sincronizado</h3>
+        <table>
+            <thead><tr><th>Fecha</th><th>Curso</th><th>Monto</th><th>Acciones</th></tr></thead>
+            <tbody id="tablaBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // CONFIGURACIÓN FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAirJkl3GuwTRKhpOHHTMDSrQMErtVYTQA",
+      authDomain: "control-de-sesiones-276d7.firebaseapp.com",
+      databaseURL: "https://control-de-sesiones-276d7-default-rtdb.firebaseio.com",
+      projectId: "control-de-sesiones-276d7",
+      storageBucket: "control-de-sesiones-276d7.firebasestorage.app",
+      messagingSenderId: "140827652455",
+      appId: "1:140827652455:web:cddc90a65b71e634a67fc2",
+      measurementId: "G-N58PJ9KZV7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const auth = firebase.auth();
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    // SEGURIDAD: TU CORREO
+    const EMAIL_AUTORIZADO = "frank.tovar@comsatelglobal.com";
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            if (user.email === EMAIL_AUTORIZADO) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'block';
+                document.getElementById('user-display').innerText = "Frank Tovar (Autorizado)";
+                iniciarSincronizacion();
+            } else {
+                alert("Acceso No Autorizado. Solo Frank Tovar puede ingresar.");
+                auth.signOut();
+            }
+        } else {
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('app-container').style.display = 'none';
+        }
+    });
+
+    function login() { auth.signInWithPopup(provider); }
+    function logout() { auth.signOut(); }
+
+    function iniciarSincronizacion() {
+        const cursosBase = ["Auxiliar General", "Hablar en Publico de Verdad", "MiniInfluencer", "PsicoClown", "SocialMente", "Unicos"].sort();
+        document.getElementById('cursos-list').innerHTML = cursosBase.map(c => `<option value="${c}">`).join('');
+        
+        db.ref('sesiones').on('value', (snapshot) => {
+            const data = snapshot.val();
+            const sesiones = data ? Object.keys(data).map(key => ({...data[key], fbKey: key})) : [];
+            renderizar(sesiones);
+        });
+    }
+
+    function guardarSesion() {
+        const curso = document.getElementById('curso').value;
+        const fecha = document.getElementById('fecha').value;
+        const horario = document.getElementById('horario').value;
+        const tarifa = parseFloat(document.getElementById('rol').value);
+        const editId = document.getElementById('editId').value;
+
+        if(!curso || !fecha) return alert("Completa los datos");
+        const obj = { curso: curso.trim(), fecha, horario, tarifa };
+
+        if(editId) {
+            db.ref('sesiones/' + editId).update(obj).then(() => resetForm());
+        } else {
+            db.ref('sesiones').push(obj).then(() => resetForm());
+        }
+    }
+
+    function resetForm() {
+        document.getElementById('editId').value = "";
+        document.getElementById('curso').value = "";
+        document.getElementById('btnPrincipal').innerText = "Registrar";
+    }
+
+    function renderizar(sesiones) {
+        const tbody = document.getElementById('tablaBody');
+        tbody.innerHTML = '';
+        let total = 0;
+
+        sesiones.sort((a,b) => b.fecha.localeCompare(a.fecha));
+
+        sesiones.forEach(s => {
+            total += s.tarifa;
+            tbody.innerHTML += `<tr>
+                <td>${s.fecha.slice(5)}</td>
+                <td><strong>${s.curso}</strong></td>
+                <td>S/ ${s.tarifa}</td>
+                <td class="actions">
+                    <button class="btn-edit" onclick="prepararEdicion('${s.fbKey}')">✏️</button>
+                    <button class="btn-del" onclick="eliminar('${s.fbKey}')">🗑️</button>
+                </td>
+            </tr>`;
+        });
+        document.getElementById('totalSesiones').innerText = sesiones.length;
+        document.getElementById('totalIngresos').innerText = "S/ " + total.toFixed(2);
+    }
+
+    function prepararEdicion(id) {
+        db.ref('sesiones/' + id).once('value', snapshot => {
+            const s = snapshot.val();
+            document.getElementById('editId').value = id;
+            document.getElementById('curso').value = s.curso;
+            document.getElementById('fecha').value = s.fecha;
+            document.getElementById('horario').value = s.horario;
+            document.getElementById('rol').value = s.tarifa;
+            document.getElementById('btnPrincipal').innerText = "Actualizar";
+            window.scrollTo(0,0);
+        });
+    }
+
+    function eliminar(id) {
+        if(confirm("¿Eliminar de la nube?")) db.ref('sesiones/' + id).remove();
+    }
+</script>
+</body>
+</html>
