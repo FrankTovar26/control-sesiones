@@ -149,7 +149,7 @@
 </div>
 
 <script>
-    // CONFIGURACIÓN FIREBASE
+    // --- CREDENCIALES UNIFICADAS ---
     const firebaseConfig = {
       apiKey: "AIzaSyAirJkl3GuwTRKhpOHHTMDSrQMErtVYTQA",
       authDomain: "control-de-sesiones-276d7.firebaseapp.com",
@@ -161,12 +161,12 @@
       measurementId: "G-N58PJ9KZV7"
     };
 
+    // Inicialización Compat
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const auth = firebase.auth();
     const provider = new firebase.auth.GoogleAuthProvider();
 
-    // SEGURIDAD: LISTA BLANCA
     const CORREOS_PERMITIDOS = [
         "frank.tovar@comsatelglobal.com",
         "giulianabf15@gmail.com"
@@ -175,6 +175,7 @@
     let sesiones = [];
     let mostrarMontos = false;
 
+    // --- MANEJO DE AUTENTICACIÓN ---
     auth.onAuthStateChanged(user => {
         if (user) {
             if (CORREOS_PERMITIDOS.includes(user.email)) {
@@ -192,14 +193,16 @@
         }
     });
 
-    function login() { auth.signInWithPopup(provider).catch(e => alert("Error al ingresar: " + e.message)); }
+    function login() { auth.signInWithPopup(provider).catch(e => alert("Error: " + e.message)); }
     function logout() { auth.signOut(); }
 
     function iniciarApp() {
+        const user = auth.currentUser;
         const cursosBase = ["Auxiliar General", "Hablar en Publico de Verdad", "MiniInfluencer", "PsicoClown", "SocialMente", "Unicos"].sort();
         document.getElementById('cursos-list').innerHTML = cursosBase.map(c => `<option value="${c}">`).join('');
         
-        db.ref('sesiones').on('value', snapshot => {
+        // CORRECCIÓN SEGURIDAD: Escuchar solo la carpeta del usuario
+        db.ref('sesiones/' + user.uid).on('value', snapshot => {
             const data = snapshot.val();
             sesiones = data ? Object.keys(data).map(key => ({...data[key], fbKey: key})) : [];
             renderizar();
@@ -207,6 +210,7 @@
     }
 
     function guardarSesion() {
+        const user = auth.currentUser;
         const curso = document.getElementById('curso').value;
         const fecha = document.getElementById('fecha').value;
         const horario = document.getElementById('horario').value;
@@ -216,13 +220,15 @@
         if(!curso || !fecha) return alert("Faltan datos");
         const obj = { curso: curso.trim(), fecha, horario, tarifa };
 
+        // CORRECCIÓN SEGURIDAD: Guardar en carpeta del usuario
         if(editId) {
-            db.ref('sesiones/' + editId).update(obj).then(() => resetForm());
+            db.ref('sesiones/' + user.uid + '/' + editId).update(obj).then(() => resetForm());
         } else {
-            db.ref('sesiones').push(obj).then(() => resetForm());
+            db.ref('sesiones/' + user.uid).push(obj).then(() => resetForm());
         }
     }
 
+    // --- FUNCIONES DE SOPORTE ---
     function prepararEdicion(id) {
         const s = sesiones.find(x => x.fbKey === id);
         document.getElementById('editId').value = id;
@@ -291,7 +297,7 @@
                 <td class="actions">
                     <button class="btn-act btn-copy" onclick="clonarSesion('${s.fbKey}')" title="Clonar">📋</button>
                     <button class="btn-act btn-edit" onclick="prepararEdicion('${s.fbKey}')" title="Editar">✏️</button>
-                    <button class="btn-act btn-del" onclick="if(confirm('¿Eliminar?')) db.ref('sesiones/'+'${s.fbKey}').remove()" title="Borrar">🗑️</button>
+                    <button class="btn-act btn-del" onclick="if(confirm('¿Eliminar?')) db.ref('sesiones/' + auth.currentUser.uid + '/' + '${s.fbKey}').remove()" title="Borrar">🗑️</button>
                 </td>
             </tr>`;
         });
