@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fly Gestión V1 - Historial & Auditoría</title>
+    <title>Fly Gestión - Control Total</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -15,47 +15,42 @@
             --warning: #f59e0b; --danger: #dc2626; --dark: #1e293b; --bg: #f1f5f9;
         }
 
-        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
         
-        /* Pantalla de Login */
         #login-screen { 
-            display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; height: 100vh; text-align: center; background: white;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; text-align: center; background: white;
         }
         .btn-google { 
-            background: white; color: #444; padding: 12px 24px; 
-            border-radius: 8px; border: 1px solid #ddd; font-weight: bold; 
-            cursor: pointer; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white; color: #444; padding: 12px 24px; border-radius: 8px; 
+            border: 1px solid #ddd; font-weight: bold; cursor: pointer; 
+            display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .container { max-width: 1200px; margin: auto; display: none; }
 
         header { 
-            background: white; padding: 15px; border-radius: 12px; 
-            margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+            background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
         }
 
         .form-grid { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 12px; background: white; padding: 20px; border-radius: 12px; 
-            margin-bottom: 20px; border: 1px solid #e2e8f0;
+            gap: 12px; background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0;
         }
 
         .field-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-weight: 600; font-size: 0.75rem; color: var(--secondary); }
-        input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; }
+        input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
 
-        .btn-save { background: var(--primary); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-save { background: var(--primary); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; width: 100%; }
         
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-card { background: white; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; }
         .stat-card span { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
 
-        /* Estilos de la Tabla y Filtros */
         .card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
-        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 8px; }
+        .filter-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 8px; }
         
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: var(--secondary); }
@@ -64,32 +59,32 @@
         .money-blur { filter: blur(8px); opacity: 0.3; }
         .badge { background: #e2e8f0; padding: 2px 6px; border-radius: 6px; font-weight: bold; font-size: 0.7rem; }
         
-        .main-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
+        .main-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; }
         @media (max-width: 850px) { .main-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <h1 style="color: var(--primary)">Fly Gestión - Sesiones</h1>
+    <h1 style="color: var(--primary)">Fly Gestión</h1>
     <button class="btn-google" onclick="login()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
-        Entrar con Google
+        Ingresar con Google
     </button>
 </div>
 
 <div class="container" id="app-container">
     <header>
         <div>
-            <h1 id="user-display" style="font-size: 1.1rem;">Hola</h1>
-            <button onclick="togglePrivacidad()" id="btnLock" style="background:none; border:1px solid #ddd; padding:4px 8px; border-radius:6px; cursor:pointer; font-size: 0.7rem;">🔒 Ver Montos</button>
+            <h1 id="user-display" style="font-size: 1rem;">Cargando...</h1>
+            <button onclick="togglePrivacidad()" id="btnLock" style="background:none; border:1px solid #ddd; padding:4px 8px; border-radius:6px; cursor:pointer; font-size: 0.7rem; margin-top:5px;">🔒 Ver Montos</button>
         </div>
-        <button onclick="logout()" style="border:none; background:none; color:var(--danger); font-size:0.8rem; cursor:pointer; font-weight:bold;">Salir</button>
+        <button onclick="logout()" style="border:none; background:none; color:var(--danger); font-size:0.8rem; cursor:pointer; font-weight:bold;">Cerrar Sesión</button>
     </header>
 
     <div class="stats">
-        <div class="stat-card"><small>SESIONES FILTRADAS</small><span id="totalSesiones">0</span></div>
-        <div class="stat-card"><small>MONTO FILTRADO</small><span id="totalIngresos" class="money-blur">S/ ****</span></div>
+        <div class="stat-card"><small>SESIONES</small><span id="totalSesiones">0</span></div>
+        <div class="stat-card"><small>TOTAL</small><span id="totalIngresos" class="money-blur">S/ ****</span></div>
     </div>
 
     <div class="form-grid">
@@ -102,35 +97,35 @@
                 <option value="11:00 - 12:40">11:00 - 12:40</option>
                 <option value="14:40 - 16:40">14:40 - 16:40</option>
                 <option value="16:40 - 19:00">16:40 - 19:00</option>
+                <option value="19:00 - 21:00">19:00 - 21:00</option>
             </select>
         </div>
         <div class="field-group"><label>Rol</label><select id="rol"><option value="40">Titular</option><option value="30">Auxiliar</option></select></div>
-        <button class="btn-save" onclick="guardarSesion()" id="btnPrincipal">Registrar Clase</button>
+        <div style="display: flex; align-items: flex-end;"><button class="btn-save" onclick="guardarSesion()" id="btnPrincipal">Registrar</button></div>
     </div>
 
     <div class="main-grid">
         <div class="card">
-            <h3>Historial de Auditoría</h3>
+            <h3>Historial</h3>
             <div class="filter-bar">
-                <div class="field-group"><label>Filtrar por Mes</label><input type="month" id="filtroMes" onchange="renderizar()"></div>
-                <div class="field-group"><label>Buscar Curso</label><input type="text" id="filtroTexto" placeholder="Escribe..." onkeyup="renderizar()"></div>
+                <div class="field-group"><label>Mes</label><input type="month" id="filtroMes" onchange="renderizar()"></div>
+                <div class="field-group"><label>Buscar</label><input type="text" id="filtroTexto" placeholder="Curso..." onkeyup="renderizar()"></div>
             </div>
             <table>
-                <thead><tr><th>Fecha</th><th>Curso</th><th class="hide-mobile">Pago</th><th>Acciones</th></tr></thead>
+                <thead><tr><th>Fecha</th><th>Curso</th><th class="hide-mobile">Pago</th><th>E</th></tr></thead>
                 <tbody id="tablaBody"></tbody>
             </table>
         </div>
 
-        <div class="sidebar">
-            <div class="card">
-                <h3>Acumulado Mensual</h3>
-                <table id="tablaMeses"><thead><tr><th>Mes</th><th>Cant.</th><th>Subtotal</th></tr></thead><tbody></tbody></table>
-            </div>
+        <div class="card">
+            <h3>Resumen Mensual</h3>
+            <table id="tablaMeses"><thead><tr><th>Mes</th><th>Ses.</th><th>Total</th></tr></thead><tbody></tbody></table>
         </div>
     </div>
 </div>
 
 <script>
+    // CREDENCIALES
     const firebaseConfig = {
       apiKey: "AIzaSyAirJkl3GuwTRKhpOHHTMDSrQMErtVYTQA",
       authDomain: "control-de-sesiones-276d7.firebaseapp.com",
@@ -150,17 +145,19 @@
     let sesiones = [];
     let mostrarMontos = false;
 
+    // ESCUCHADOR DE SESIÓN
     auth.onAuthStateChanged(user => {
         if (user && CORREOS_PERMITIDOS.includes(user.email)) {
             document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            document.getElementById('user-display').innerText = "Bienvenido, " + user.displayName;
+            document.getElementById('container').style.display = 'block'; // Fix selector
+            document.querySelector('.container').style.display = 'block';
+            document.getElementById('user-display').innerText = "Hola, " + user.displayName;
             iniciarApp();
         } else if (user) {
             alert("No autorizado"); auth.signOut();
         } else {
             document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('app-container').style.display = 'none';
+            document.querySelector('.container').style.display = 'none';
         }
     });
 
@@ -172,6 +169,7 @@
         const cursosBase = ["Auxiliar General", "Hablar en Publico de Verdad", "MiniInfluencer", "PsicoClown", "SocialMente", "Unicos"].sort();
         document.getElementById('cursos-list').innerHTML = cursosBase.map(c => `<option value="${c}">`).join('');
         
+        // Carga de datos desde la carpeta privada UID
         db.ref('sesiones/' + user.uid).on('value', snapshot => {
             const data = snapshot.val();
             sesiones = data ? Object.keys(data).map(key => ({...data[key], fbKey: key})) : [];
@@ -181,27 +179,31 @@
 
     function guardarSesion() {
         const user = auth.currentUser;
+        const curso = document.getElementById('curso').value;
+        const fecha = document.getElementById('fecha').value;
+        if(!curso || !fecha) return alert("Faltan datos");
+
         const obj = {
-            curso: document.getElementById('curso').value,
-            fecha: document.getElementById('fecha').value,
+            curso: curso.trim(),
+            fecha: fecha,
             horario: document.getElementById('horario').value,
             tarifa: parseFloat(document.getElementById('rol').value)
         };
-        const editId = document.getElementById('editId').value;
-        if(!obj.curso || !obj.fecha) return alert("Faltan datos");
 
-        const userRef = db.ref('sesiones/' + user.uid);
+        const editId = document.getElementById('editId').value;
+        const ref = db.ref('sesiones/' + user.uid);
+
         if(editId) {
-            userRef.child(editId).update(obj).then(() => resetForm());
+            ref.child(editId).update(obj).then(() => resetForm());
         } else {
-            userRef.push(obj).then(() => resetForm());
+            ref.push(obj).then(() => resetForm());
         }
     }
 
     function resetForm() {
         document.getElementById('editId').value = "";
         document.getElementById('curso').value = "";
-        document.getElementById('btnPrincipal').innerText = "Registrar Clase";
+        document.getElementById('btnPrincipal').innerText = "Registrar";
     }
 
     function togglePrivacidad() {
@@ -217,42 +219,47 @@
         const fTxt = document.getElementById('filtroTexto').value.toLowerCase();
         
         tBody.innerHTML = tM.innerHTML = '';
-        let totalFiltro = 0, cantFiltro = 0, mesD = {};
+        let totalVisible = 0, cantVisible = 0, mesD = {};
 
+        // 1. Ordenar sesiones por fecha descendente
         sesiones.sort((a,b) => b.fecha.localeCompare(a.fecha));
 
         sesiones.forEach(s => {
-            const mk = new Date(s.fecha+'T12:00:00').toLocaleDateString('es-PE',{month:'short',year:'2-digit'}).toUpperCase();
-            if(!mesD[mk]) mesD[mk] = {m:0,c:0}; mesD[mk].m += s.tarifa; mesD[mk].c++;
+            // Procesar acumulados para tabla derecha (siempre, independiente del filtro de texto)
+            const d = new Date(s.fecha + 'T12:00:00');
+            const mk = d.toLocaleDateString('es-PE', {month:'short', year:'2-digit'}).toUpperCase();
+            if(!mesD[mk]) mesD[mk] = {m:0, c:0};
+            mesD[mk].m += s.tarifa;
+            mesD[mk].c++;
 
-            // Lógica de filtrado
-            const pasaMes = fMes ? s.fecha.startsWith(fMes) : true;
-            const pasaTxt = s.curso.toLowerCase().includes(fTxt);
+            // Aplicar filtros para tabla principal
+            const pasaMes = !fMes || s.fecha.startsWith(fMes);
+            const pasaTxt = !fTxt || s.curso.toLowerCase().includes(fTxt);
 
             if(pasaMes && pasaTxt) {
-                totalFiltro += s.tarifa;
-                cantFiltro++;
+                totalVisible += s.tarifa;
+                cantVisible++;
                 const pTxt = mostrarMontos ? `S/ ${s.tarifa}` : `S/ **`;
                 tBody.innerHTML += `<tr>
                     <td>${s.fecha.slice(5)}</td>
                     <td><strong>${s.curso}</strong></td>
                     <td class="${mostrarMontos?'':'money-blur'}">${pTxt}</td>
                     <td>
-                        <button onclick="prepararEdicion('${s.fbKey}')" style="border:none; background:#dcfce7; cursor:pointer; padding:4px; border-radius:4px;">✏️</button>
-                        <button onclick="if(confirm('¿Borrar?')) db.ref('sesiones/'+auth.currentUser.uid+'/${s.fbKey}').remove()" style="border:none; background:#fee2e2; cursor:pointer; padding:4px; border-radius:4px;">🗑️</button>
+                        <button onclick="prepararEdicion('${s.fbKey}')" style="border:none; background:none; cursor:pointer;">✏️</button>
                     </td>
                 </tr>`;
             }
         });
 
-        // Llenar tabla resumen mensual (Independiente de filtros de búsqueda)
+        // Llenar tabla resumen mensual (derecha)
         Object.keys(mesD).forEach(k => {
             const mVal = mostrarMontos ? `S/ ${mesD[k].m}` : `S/ **`;
             tM.innerHTML += `<tr><td>${k}</td><td><span class="badge">${mesD[k].c}</span></td><td>${mVal}</td></tr>`;
         });
 
-        document.getElementById('totalSesiones').innerText = cantFiltro;
-        document.getElementById('totalIngresos').innerText = mostrarMontos ? "S/ " + totalFiltro.toFixed(2) : "S/ ****";
+        document.getElementById('totalSesiones').innerText = cantVisible;
+        document.getElementById('totalIngresos').innerText = mostrarMontos ? "S/ " + totalVisible.toFixed(2) : "S/ ****";
+        document.getElementById('totalIngresos').className = mostrarMontos ? '' : 'money-blur';
     }
 
     function prepararEdicion(id) {
