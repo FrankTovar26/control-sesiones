@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fly Gestión - Control Total</title>
+    <title>Fly Gestión - V1.4 Final</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -15,42 +15,47 @@
             --warning: #f59e0b; --danger: #dc2626; --dark: #1e293b; --bg: #f1f5f9;
         }
 
-        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
+        body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
         
+        /* Pantalla de Login */
         #login-screen { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; text-align: center; background: white;
+            display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; height: 100vh; text-align: center; background: white;
         }
         .btn-google { 
-            background: white; color: #444; padding: 12px 24px; border-radius: 8px; 
-            border: 1px solid #ddd; font-weight: bold; cursor: pointer; 
-            display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white; color: #444; padding: 12px 24px; 
+            border-radius: 8px; border: 1px solid #ddd; font-weight: bold; 
+            cursor: pointer; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
-        .container { max-width: 1200px; margin: auto; display: none; }
+        /* Contenedor Principal (Inicia oculto) */
+        #app-container { max-width: 1200px; margin: auto; display: none; }
 
         header { 
-            background: white; padding: 15px; border-radius: 12px; margin-bottom: 15px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;
+            background: white; padding: 15px; border-radius: 12px; 
+            margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         .form-grid { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
-            gap: 12px; background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0;
+            gap: 12px; background: white; padding: 20px; border-radius: 12px; 
+            margin-bottom: 20px; border: 1px solid #e2e8f0;
         }
 
         .field-group { display: flex; flex-direction: column; gap: 5px; }
         label { font-weight: 600; font-size: 0.75rem; color: var(--secondary); }
-        input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; width: 100%; box-sizing: border-box; }
+        input, select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; }
 
-        .btn-save { background: var(--primary); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; width: 100%; }
+        .btn-save { background: var(--primary); color: white; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
         
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-card { background: white; padding: 12px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; }
         .stat-card span { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
 
         .card { background: white; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 15px; }
-        .filter-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; background: #f8fafc; padding: 10px; border-radius: 8px; }
+        .filter-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th { text-align: left; padding: 8px; border-bottom: 2px solid #f1f5f9; color: var(--secondary); }
@@ -67,17 +72,18 @@
 
 <div id="login-screen">
     <h1 style="color: var(--primary)">Fly Gestión</h1>
+    <p>Ingresa para ver tu historial</p>
     <button class="btn-google" onclick="login()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">
-        Ingresar con Google
+        Entrar con Google
     </button>
 </div>
 
-<div class="container" id="app-container">
+<div id="app-container">
     <header>
         <div>
-            <h1 id="user-display" style="font-size: 1rem;">Cargando...</h1>
-            <button onclick="togglePrivacidad()" id="btnLock" style="background:none; border:1px solid #ddd; padding:4px 8px; border-radius:6px; cursor:pointer; font-size: 0.7rem; margin-top:5px;">🔒 Ver Montos</button>
+            <h1 id="user-display" style="font-size: 1rem;">Hola</h1>
+            <button onclick="togglePrivacidad()" id="btnLock" style="background:none; border:1px solid #ddd; padding:4px 8px; border-radius:6px; cursor:pointer; font-size: 0.7rem;">🔒 Ver Montos</button>
         </div>
         <button onclick="logout()" style="border:none; background:none; color:var(--danger); font-size:0.8rem; cursor:pointer; font-weight:bold;">Cerrar Sesión</button>
     </header>
@@ -106,26 +112,25 @@
 
     <div class="main-grid">
         <div class="card">
-            <h3>Historial</h3>
+            <h3>Historial Filtrado</h3>
             <div class="filter-bar">
-                <div class="field-group"><label>Mes</label><input type="month" id="filtroMes" onchange="renderizar()"></div>
+                <div class="field-group"><label>Por Mes</label><input type="month" id="filtroMes" onchange="renderizar()"></div>
                 <div class="field-group"><label>Buscar</label><input type="text" id="filtroTexto" placeholder="Curso..." onkeyup="renderizar()"></div>
             </div>
             <table>
-                <thead><tr><th>Fecha</th><th>Curso</th><th class="hide-mobile">Pago</th><th>E</th></tr></thead>
+                <thead><tr><th>Fecha</th><th>Curso</th><th class="hide-mobile">Pago</th><th>Acción</th></tr></thead>
                 <tbody id="tablaBody"></tbody>
             </table>
         </div>
 
         <div class="card">
-            <h3>Resumen Mensual</h3>
+            <h3>Resumen por Mes</h3>
             <table id="tablaMeses"><thead><tr><th>Mes</th><th>Ses.</th><th>Total</th></tr></thead><tbody></tbody></table>
         </div>
     </div>
 </div>
 
 <script>
-    // CREDENCIALES
     const firebaseConfig = {
       apiKey: "AIzaSyAirJkl3GuwTRKhpOHHTMDSrQMErtVYTQA",
       authDomain: "control-de-sesiones-276d7.firebaseapp.com",
@@ -145,31 +150,42 @@
     let sesiones = [];
     let mostrarMontos = false;
 
-    // ESCUCHADOR DE SESIÓN
+    // EL CORAZÓN DEL LOGIN: Escucha cambios de usuario
     auth.onAuthStateChanged(user => {
-        if (user && CORREOS_PERMITIDOS.includes(user.email)) {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('container').style.display = 'block'; // Fix selector
-            document.querySelector('.container').style.display = 'block';
-            document.getElementById('user-display').innerText = "Hola, " + user.displayName;
-            iniciarApp();
-        } else if (user) {
-            alert("No autorizado"); auth.signOut();
+        const loginScreen = document.getElementById('login-screen');
+        const appContainer = document.getElementById('app-container');
+
+        if (user) {
+            if (CORREOS_PERMITIDOS.includes(user.email)) {
+                loginScreen.style.display = 'none';
+                appContainer.style.display = 'block';
+                document.getElementById('user-display').innerText = "Hola, " + user.displayName;
+                iniciarApp();
+            } else {
+                alert("Correo no autorizado.");
+                auth.signOut();
+            }
         } else {
-            document.getElementById('login-screen').style.display = 'flex';
-            document.querySelector('.container').style.display = 'none';
+            loginScreen.style.display = 'flex';
+            appContainer.style.display = 'none';
         }
     });
 
-    function login() { auth.signInWithPopup(provider); }
-    function logout() { auth.signOut(); }
+    function login() { 
+        auth.signInWithPopup(provider).catch(e => console.error("Error Login:", e)); 
+    }
+
+    function logout() { 
+        auth.signOut(); 
+    }
 
     function iniciarApp() {
         const user = auth.currentUser;
+        if(!user) return;
+
         const cursosBase = ["Auxiliar General", "Hablar en Publico de Verdad", "MiniInfluencer", "PsicoClown", "SocialMente", "Unicos"].sort();
         document.getElementById('cursos-list').innerHTML = cursosBase.map(c => `<option value="${c}">`).join('');
         
-        // Carga de datos desde la carpeta privada UID
         db.ref('sesiones/' + user.uid).on('value', snapshot => {
             const data = snapshot.val();
             sesiones = data ? Object.keys(data).map(key => ({...data[key], fbKey: key})) : [];
@@ -221,18 +237,16 @@
         tBody.innerHTML = tM.innerHTML = '';
         let totalVisible = 0, cantVisible = 0, mesD = {};
 
-        // 1. Ordenar sesiones por fecha descendente
         sesiones.sort((a,b) => b.fecha.localeCompare(a.fecha));
 
         sesiones.forEach(s => {
-            // Procesar acumulados para tabla derecha (siempre, independiente del filtro de texto)
+            // Acumulados mensuales
             const d = new Date(s.fecha + 'T12:00:00');
             const mk = d.toLocaleDateString('es-PE', {month:'short', year:'2-digit'}).toUpperCase();
             if(!mesD[mk]) mesD[mk] = {m:0, c:0};
             mesD[mk].m += s.tarifa;
             mesD[mk].c++;
 
-            // Aplicar filtros para tabla principal
             const pasaMes = !fMes || s.fecha.startsWith(fMes);
             const pasaTxt = !fTxt || s.curso.toLowerCase().includes(fTxt);
 
@@ -244,14 +258,11 @@
                     <td>${s.fecha.slice(5)}</td>
                     <td><strong>${s.curso}</strong></td>
                     <td class="${mostrarMontos?'':'money-blur'}">${pTxt}</td>
-                    <td>
-                        <button onclick="prepararEdicion('${s.fbKey}')" style="border:none; background:none; cursor:pointer;">✏️</button>
-                    </td>
+                    <td><button onclick="prepararEdicion('${s.fbKey}')" style="border:none; background:none; cursor:pointer;">✏️</button></td>
                 </tr>`;
             }
         });
 
-        // Llenar tabla resumen mensual (derecha)
         Object.keys(mesD).forEach(k => {
             const mVal = mostrarMontos ? `S/ ${mesD[k].m}` : `S/ **`;
             tM.innerHTML += `<tr><td>${k}</td><td><span class="badge">${mesD[k].c}</span></td><td>${mVal}</td></tr>`;
